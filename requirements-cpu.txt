@@ -1,0 +1,20 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+jarvislabs
+tensorboard
+torch==2.12.1
+torchvision==0.27.1
+torchaudio>=2.9
+datasets>=4.8
+tokenizers>=0.22
+transformers>=5.13
+pyarrow>=24.0
+accelerate>=1.14
+requests>=2.32
+ipywidgets
+notebook
+ninja
+wheel
+
+# huggingface
+huggingface_hub
