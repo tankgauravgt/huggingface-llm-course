@@ -14,4 +14,4 @@ uv pip install -r requirements-cpu.txt --index-strategy unsafe-best-match
 export HF_HOME="./hf_cache"
 
 # launch jupyter notebook:
-jupyter-notebook --no-browser --IdentityProvider.token=""
+jupyter-notebook --no-browser --IdentityProvider.token="" --allow-root
