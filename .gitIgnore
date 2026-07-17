@@ -1,6 +1,5 @@
 .ipynb_checkpoints
 .venv
-.env
 
 # huggingface cache:
 hf_cache
