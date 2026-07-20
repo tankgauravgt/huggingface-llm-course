@@ -532,6 +532,7 @@ show_gpu_menu() {
     echo "5. Resume instance."
     echo "6. Destroy instance."
     echo ""
+    echo "Type 'setup' to setup an instance."
     echo "Type 'back' to return to main menu."
     echo "Type 'exit' to exit the terminal."
     echo "----------------------------------------"
@@ -629,6 +630,23 @@ gpu_create() {
     sleep 2
 }
 
+gpu_setup() {
+    local target
+    target=$(gpu_pick_id) || return 1
+    echo ""
+    echo "Setting up instance $target..."
+    echo "Cloning huggingface-llm-course repository and running setup script..."
+    jl exec "$target" -- sh -lc 'cd /home && git clone https://github.com/tankgauravgt/huggingface-llm-course 2>&1 || echo "Repository may already exist, continuing..."; cd /home/huggingface-llm-course && bash ./setup.gpu.sh'
+    local rc=$?
+    if [[ $rc -ne 0 ]]; then
+        echo "Setup encountered errors (exit code $rc)."
+        sleep 2
+        return 1
+    fi
+    echo "Setup complete for instance $target."
+    sleep 2
+}
+
 manage_gpu() {
     while true; do
         show_gpu_menu
@@ -653,6 +671,9 @@ manage_gpu() {
                 ;;
             6)
                 gpu_destroy
+                ;;
+            setup)
+                gpu_setup
                 ;;
             back|b)
                 break
@@ -687,6 +708,7 @@ show_gpu_vm_menu() {
     echo "5. Resume instance."
     echo "6. Destroy instance."
     echo ""
+    echo "Type 'setup' to setup an instance."
     echo "Type 'back' to return to main menu."
     echo "Type 'exit' to exit the terminal."
     echo "----------------------------------------"
@@ -942,6 +964,9 @@ manage_gpu_vm() {
                 ;;
             6)
                 gpu_destroy
+                ;;
+            setup)
+                gpu_setup
                 ;;
             back|b)
                 break
