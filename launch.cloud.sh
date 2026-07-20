@@ -643,8 +643,10 @@ gpu_setup() {
         return 1
     fi
     echo "Connecting and running setup..."
+    trap - INT
     $ssh_cmd 'cd /home && (git clone https://github.com/tankgauravgt/huggingface-llm-course || echo "Repo may already exist, continuing...") && cd /home/huggingface-llm-course && bash ./setup.gpu.sh'
     local rc=$?
+    trap '' INT
     if [[ $rc -ne 0 ]]; then
         echo "Setup encountered errors (exit code $rc)."
         sleep 2
