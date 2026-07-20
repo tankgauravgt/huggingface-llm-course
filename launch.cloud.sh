@@ -644,7 +644,7 @@ gpu_setup() {
     fi
     echo "Connecting and running setup..."
     trap - INT
-    $ssh_cmd -o StrictHostKeyChecking=no 'cd /home && (git clone https://github.com/tankgauravgt/huggingface-llm-course || echo "Repo may already exist, continuing...") && cd /home/huggingface-llm-course && bash ./setup.gpu.sh'
+    $ssh_cmd -L localhost:4000:localhost:4000 -o StrictHostKeyChecking=no 'cd /home && (git clone https://github.com/tankgauravgt/huggingface-llm-course || echo "Repo may already exist, continuing...") && cd /home/huggingface-llm-course && bash ./setup.gpu.sh'
     local rc=$?
     trap '' INT
     if [[ $rc -ne 0 ]]; then

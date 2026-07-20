@@ -72,4 +72,4 @@ export HF_HOME="./hf_cache"
 export HF_XET_HIGH_PERFORMANCE="1"
 
 # launch jupyter notebook:
-jupyter-notebook --no-browser --IdentityProvider.token="" --allow-root
+jupyter-notebook --no-browser --IdentityProvider.token="" --allow-root --port 4000
