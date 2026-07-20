@@ -670,8 +670,8 @@ gpu_vm_setup() {
     fi
     echo "Connecting and running setup..."
     trap - INT
-    mkdir /root/workspace
-    $ssh_cmd -L localhost:4000:localhost:4000 -o StrictHostKeyChecking=no 'cd /root/workspace && (git clone https://github.com/tankgauravgt/huggingface-llm-course || echo "Repo may already exist, continuing...") && cd /root/workspace/huggingface-llm-course && bash ./setup.gpu.sh'
+    mkdir /home/ubuntu
+    $ssh_cmd -L localhost:4000:localhost:4000 -o StrictHostKeyChecking=no 'cd /home/ubuntu && (git clone https://github.com/tankgauravgt/huggingface-llm-course || echo "Repo may already exist, continuing...") && cd /home/ubuntu/huggingface-llm-course && bash ./setup.gpu.sh'
     local rc=$?
     trap '' INT
     if [[ $rc -ne 0 ]]; then
