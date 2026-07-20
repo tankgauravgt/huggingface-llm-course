@@ -634,9 +634,16 @@ gpu_setup() {
     local target
     target=$(gpu_pick_id) || return 1
     echo ""
-    echo "Setting up instance $target..."
-    echo "Cloning huggingface-llm-course repository and running setup script..."
-    jl exec "$target" -- sh -lc 'cd /home && git clone https://github.com/tankgauravgt/huggingface-llm-course 2>&1 || echo "Repository may already exist, continuing..."; cd /home/huggingface-llm-course && bash ./setup.gpu.sh'
+    echo "Fetching SSH command for instance $target..."
+    local ssh_cmd
+    ssh_cmd=$(jl ssh "$target" --print-command 2>/dev/null)
+    if [[ -z "$ssh_cmd" ]]; then
+        echo "Failed to get SSH command. Is the instance running?"
+        sleep 2
+        return 1
+    fi
+    echo "Connecting and running setup..."
+    $ssh_cmd 'cd /home && (git clone https://github.com/tankgauravgt/huggingface-llm-course || echo "Repo may already exist, continuing...") && cd /home/huggingface-llm-course && bash ./setup.gpu.sh'
     local rc=$?
     if [[ $rc -ne 0 ]]; then
         echo "Setup encountered errors (exit code $rc)."
