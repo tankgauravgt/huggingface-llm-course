@@ -656,6 +656,33 @@ gpu_setup() {
     sleep 2
 }
 
+gpu_vm_setup() {
+    local target
+    target=$(gpu_pick_id) || return 1
+    echo ""
+    echo "Fetching SSH command for instance $target..."
+    local ssh_cmd
+    ssh_cmd=$(jl ssh "$target" --print-command 2>/dev/null)
+    if [[ -z "$ssh_cmd" ]]; then
+        echo "Failed to get SSH command. Is the instance running?"
+        sleep 2
+        return 1
+    fi
+    echo "Connecting and running setup..."
+    trap - INT
+    mkdir /root/workspace
+    $ssh_cmd -L localhost:4000:localhost:4000 -o StrictHostKeyChecking=no 'cd /root/workspace && (git clone https://github.com/tankgauravgt/huggingface-llm-course || echo "Repo may already exist, continuing...") && cd /root/workspace/huggingface-llm-course && bash ./setup.gpu.sh'
+    local rc=$?
+    trap '' INT
+    if [[ $rc -ne 0 ]]; then
+        echo "Setup encountered errors (exit code $rc)."
+        sleep 2
+        return 1
+    fi
+    echo "Setup complete for instance $target."
+    sleep 2
+}
+
 manage_gpu() {
     while true; do
         show_gpu_menu
@@ -975,7 +1002,7 @@ manage_gpu_vm() {
                 gpu_destroy
                 ;;
             setup)
-                gpu_setup
+                gpu_vm_setup
                 ;;
             back|b)
                 break
