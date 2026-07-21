@@ -695,6 +695,32 @@ gpu_vm_setup() {
     sleep 2
 }
 
+ssh_and_port_forward() {
+    local target
+    target=$(gpu_pick_id) || return 1
+    echo ""
+    echo "Fetching SSH command for instance $target..."
+    local ssh_cmd
+    ssh_cmd=$(jl ssh "$target" --print-command 2>/dev/null)
+    if [[ -z "$ssh_cmd" ]]; then
+        echo "Failed to get SSH command. Is the instance running?"
+        sleep 2
+        return 1
+    fi
+    echo "Connecting and running setup..."
+    trap - INT
+    $ssh_cmd -L localhost:4000:localhost:4000
+    local rc=$?
+    trap '' INT
+    if [[ $rc -ne 0 ]]; then
+        echo "Setup encountered errors (exit code $rc)."
+        sleep 2
+        return 1
+    fi
+    echo "Setup complete for instance $target."
+    sleep 2    
+}
+
 manage_gpu() {
     while true; do
         show_gpu_menu
@@ -722,6 +748,7 @@ manage_gpu() {
                 ;;
             setup)
                 gpu_setup
+                ssh_and_port_forward
                 ;;
             back|b)
                 break
@@ -1015,6 +1042,7 @@ manage_gpu_vm() {
                 ;;
             setup)
                 gpu_vm_setup
+                ssh_and_port_forward
                 ;;
             back|b)
                 break
