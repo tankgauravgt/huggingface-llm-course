@@ -670,7 +670,15 @@ gpu_vm_setup() {
     fi
     echo "Connecting and running setup..."
     trap - INT
-    $ssh_cmd -L localhost:4000:localhost:4000 'cd /home/ubuntu && curl -LsSf https://astral.sh/uv/install.sh | sh && source $HOME/.local/bin/env && (git clone https://github.com/tankgauravgt/huggingface-llm-course || echo "Repo may already exist, continuing...") && cd /home/ubuntu/huggingface-llm-course && bash ./setup.gpu.sh'
+    $ssh_cmd -L localhost:4000:localhost:4000 \
+        'cd /home/ubuntu && \
+         sudo apt install tmux -y && \
+         curl -LsSf https://astral.sh/uv/install.sh | sh && \
+         source $HOME/.local/bin/env && \
+         (git clone https://github.com/tankgauravgt/huggingface-llm-course || echo "Repo may already exist, continuing...") && \
+         cd /home/ubuntu/huggingface-llm-course && \
+         tmux new -d -s gpu-nb bash ./setup.gpu.sh'
+         
     local rc=$?
     trap '' INT
     if [[ $rc -ne 0 ]]; then
