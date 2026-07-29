@@ -645,12 +645,17 @@ gpu_setup() {
     fi
     echo "Connecting and running setup..."
     trap - INT
+    local hf_token="${HF_TOKEN:-}"
+    local bashrc_cmd=""
+    if [[ -n "$hf_token" ]]; then
+        bashrc_cmd="echo 'export HF_TOKEN=\"$hf_token\"' >> ~/.bashrc && source ~/.bashrc &&"
+    fi
     $ssh_cmd -L localhost:4000:localhost:4000 \
-    'cd /home && \
+    "cd /home && \
     sudo apt install tmux -y && \
-    (git clone https://github.com/tankgauravgt/huggingface-llm-course || echo "Repo may already exist, continuing...") && \
+    (git clone https://github.com/tankgauravgt/huggingface-llm-course || echo 'Repo may already exist, continuing...') && \
     cd /home/huggingface-llm-course && \
-    tmux new -d -s gpu-nb bash ./setup.gpu.sh'
+    $bashrc_cmd tmux new -d -s gpu-nb bash ./setup.gpu.sh"
     local rc=$?
     trap '' INT
     if [[ $rc -ne 0 ]]; then
@@ -676,15 +681,20 @@ gpu_vm_setup() {
     fi
     echo "Connecting and running setup..."
     trap - INT
+    local hf_token="${HF_TOKEN:-}"
+    local bashrc_cmd=""
+    if [[ -n "$hf_token" ]]; then
+        bashrc_cmd="echo 'export HF_TOKEN=\"$hf_token\"' >> ~/.bashrc && source ~/.bashrc &&"
+    fi
     $ssh_cmd -L localhost:4000:localhost:4000 \
-        'cd /home/ubuntu && \
+        "cd /home/ubuntu && \
          sudo apt install tmux -y && \
          curl -LsSf https://astral.sh/uv/install.sh | sh && \
-         source $HOME/.local/bin/env && \
-         (git clone https://github.com/tankgauravgt/huggingface-llm-course || echo "Repo may already exist, continuing...") && \
+         source \$HOME/.local/bin/env && \
+         (git clone https://github.com/tankgauravgt/huggingface-llm-course || echo 'Repo may already exist, continuing...') && \
          cd /home/ubuntu/huggingface-llm-course && \
-         tmux new -d -s gpu-nb bash ./setup.gpu.sh'
-         
+         $bashrc_cmd tmux new -d -s gpu-nb bash ./setup.gpu.sh"
+
     local rc=$?
     trap '' INT
     if [[ $rc -ne 0 ]]; then
