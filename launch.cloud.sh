@@ -748,6 +748,7 @@ manage_gpu() {
                 ;;
             ssh)
                 ssh_and_port_forward
+                ;;
             setup)
                 gpu_setup
                 ssh_and_port_forward
@@ -1044,6 +1045,7 @@ manage_gpu_vm() {
                 ;;
             ssh)
                 ssh_and_port_forward
+                ;;
             setup)
                 gpu_vm_setup
                 ssh_and_port_forward
