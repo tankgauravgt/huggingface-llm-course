@@ -646,9 +646,13 @@ gpu_setup() {
     echo "Connecting and running setup..."
     trap - INT
     local hf_token="${HF_TOKEN:-}"
+    local wandb_key="${WANDB_API_KEY:-}"
     local bashrc_cmd=""
-    if [[ -n "$hf_token" ]]; then
-        bashrc_cmd="echo 'export HF_TOKEN=\"$hf_token\"' >> ~/.bashrc && source ~/.bashrc &&"
+    if [[ -n "$hf_token" || -n "$wandb_key" ]]; then
+        bashrc_cmd=""
+        [[ -n "$hf_token" ]]  && bashrc_cmd+="echo 'export HF_TOKEN=\"$hf_token\"' >> ~/.bashrc && "
+        [[ -n "$wandb_key" ]] && bashrc_cmd+="echo 'export WANDB_API_KEY=\"$wandb_key\"' >> ~/.bashrc && "
+        bashrc_cmd+="source ~/.bashrc &&"
     fi
     $ssh_cmd -L localhost:4000:localhost:4000 \
     "cd /home && \
@@ -682,9 +686,13 @@ gpu_vm_setup() {
     echo "Connecting and running setup..."
     trap - INT
     local hf_token="${HF_TOKEN:-}"
+    local wandb_key="${WANDB_API_KEY:-}"
     local bashrc_cmd=""
-    if [[ -n "$hf_token" ]]; then
-        bashrc_cmd="echo 'export HF_TOKEN=\"$hf_token\"' >> ~/.bashrc && source ~/.bashrc &&"
+    if [[ -n "$hf_token" || -n "$wandb_key" ]]; then
+        bashrc_cmd=""
+        [[ -n "$hf_token" ]]  && bashrc_cmd+="echo 'export HF_TOKEN=\"$hf_token\"' >> ~/.bashrc && "
+        [[ -n "$wandb_key" ]] && bashrc_cmd+="echo 'export WANDB_API_KEY=\"$wandb_key\"' >> ~/.bashrc && "
+        bashrc_cmd+="source ~/.bashrc &&"
     fi
     $ssh_cmd -L localhost:4000:localhost:4000 \
         "cd /home/ubuntu && \
