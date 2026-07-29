@@ -4,3 +4,5 @@
 # huggingface cache:
 directory_on_my_computer
 hf_cache
+wandb
+results
