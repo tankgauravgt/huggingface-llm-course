@@ -3,6 +3,7 @@
 
 # huggingface cache:
 directory_on_my_computer
+code-search-net-tokenizer
 hf_cache
 wandb
 results
